@@ -154,7 +154,7 @@ int main(int argc, char** argv)
             pDefaultShaderProgram->setMatrix4("modelMat", modelMatrix_1);
             glDrawArrays(GL_TRIANGLES, 0, 3);
 
-            pDefaultShaderProgram->setMatrix4("modelMat", modelMatrix_2);
+            pDefaultShaderProgram->setMatrix4("modelMat", modelMatrix_2);  //с помощью матрицы преобразования можно несколько раз рисовать один и тот же обьект
             glDrawArrays(GL_TRIANGLES, 0, 3);
 
             /* Swap front and back buffers */

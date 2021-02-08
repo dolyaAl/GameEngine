@@ -1,5 +1,6 @@
 #include "ResourceManager.h"
 #include "../Renderer/ShaderProgram.h"
+#include "../Renderer/texture2D.h"
 
 #include<sstream>
 #include<fstream>
@@ -53,7 +54,7 @@ std::shared_ptr<Renderer::ShaderProgram> ResourceManager::getShaderProgram(const
     return nullptr;
 }
 
-void ResourceManager::loadTexture(const std::string& textureName, const std::string& texturePath)
+std::shared_ptr<Renderer::Texture2D> ResourceManager::loadTexture(const std::string& textureName, const std::string& texturePath)
 {
     int channels = 0;
     int width = 0;
@@ -65,10 +66,28 @@ void ResourceManager::loadTexture(const std::string& textureName, const std::str
     if (!pixels)
     {
         std::cout << "Can't load image: " << texturePath << std::endl;
-        return;
+        return nullptr;
     }
 
+    std::shared_ptr<Renderer::Texture2D> newTexture = m_Textures.emplace(textureName, std::make_shared<Renderer::Texture2D>(width, 
+                                                                                                                            height, 
+                                                                                                                            pixels, 
+                                                                                                                            channels, 
+                                                                                                                            GL_NEAREST, 
+                                                                                                                            GL_CLAMP_TO_EDGE)).first->second;
     stbi_image_free(pixels);
+    return newTexture;
+}
+
+std::shared_ptr<Renderer::Texture2D> ResourceManager::getTexture(const std::string& textureName)
+{
+    TexturesMap::const_iterator it = m_Textures.find(textureName);
+    if (it != m_Textures.end())
+    {
+        return it->second;
+    }
+    std::cout << "Can't find textures: " << textureName << std::endl;
+    return nullptr;
 }
 
 std::string ResourceManager::getFileString(const std::string& relativeFilePath) const
